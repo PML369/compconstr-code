@@ -175,9 +175,9 @@ step (Eval (AppE f xs pos) p, as, rs, us, h, env) = do
     -- to determine which rule to apply
     case v of
         -- Rule 1 (Application)
-        AddrV a -> undefined
+        AddrV a -> Just (Enter a, args ++ as, rs, us, h, env) where Just args = mapM (val p env) xs
         -- Rule 11 (Variable bound to integer)
-        IntV k  -> undefined
+        IntV k  -> Just (ReturnInt k, as, rs, us, h, env)
 -- Rules 2 and 16 (Enter Non-Updatable/Updatable Closure)
 step (Enter a, as, rs, us, h, env) = do
     -- find the closure at address `a' on the heap
@@ -190,7 +190,14 @@ step (Enter a, as, rs, us, h, env) = do
             -- stack as are expected by the closure
             -- Rule 2 (Enter Non-Updatable Closure)
             if length as >= length xs then do
-                undefined
+                -- (ws_a, as_p) <- splitAt (length xs) as
+                ws_a <- take (length xs) as
+		as_p <- drop (length xs) as
+		p1 <- M.fromList (zip vs ws_f)
+		p2 <- M.fromList (zip xs ws_a)
+                p <- M.union p1 p2
+		
+                Just (Eval e p, as_p, rs, us, h, env)
             -- Rule 18 (NotEnoughArguments Update)
             else do
                 -- the return stack should be empty
