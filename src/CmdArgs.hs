@@ -11,14 +11,19 @@ module CmdArgs (
 
 --------------------------------------------------------------------------------
 
+import Data.Monoid ((<>))
+
 import Options.Applicative
 
 --------------------------------------------------------------------------------
 
 data CmdArgs = MkCmdArgs {
-    argsInputs :: [FilePath],
-    argsEntry  :: String,
-    argsQuiet  :: Bool
+    argsInputs    :: [FilePath],
+    argsEntry     :: String,
+    argsVerbose   :: Bool,
+    argsInterpret :: Bool,
+    argsDebug     :: Bool,
+    argsQuiet     :: Bool
 }
 
 cmdArgsP :: Parser CmdArgs
@@ -29,6 +34,13 @@ cmdArgsP = MkCmdArgs
                    metavar "BINDING" <>
                    value "main"      <>
                    help "Name of the program's entry point")
+    <*> switch (long "verbose" <>
+                short 'v'      <>
+                help "Display more information during compilation")
+    <*> switch (long "interpret" <>
+                help "Interprets the file")
+    <*> switch (long "debug" <>
+                help "Debug the compiler")
     <*> switch (long "no-stdin" <>
                 help "Tells the compiler that no stdin is available/usable.")
 

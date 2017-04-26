@@ -15,3 +15,6 @@ cabal.sandbox.config
 *.hp
 .stack-work/
 .stack-work-2/
+*.c
+*.exe
+*.log
