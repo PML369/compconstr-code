@@ -267,7 +267,8 @@ step (ReturnCon c ws, as, (AlgAlts cs d, p) : rs, us, h, env) =
 
 -- Rule 10 (Literals)
 step (Eval (LitE k _) p, as, rs, us, h, env) =
-    undefined
+    Just (ReturnInt k, as, rs, us, h, env)
+
 -- Rules 12,13,14 (ReturnInt)
 step (ReturnInt k, as, (PrimAlts cs d, p) : rs, us, h, env) =
     -- pattern-match on `k' using `cs' to determine which rule needs
