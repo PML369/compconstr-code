@@ -290,9 +290,13 @@ step (Eval (OpE op [x1, x2] _) p, as, rs, us, h, env) = do
     -- check that both values are primitive integer values before
     -- calculating the result of the built-in operation and binding it to `r'
     r  <- case (i1,i2) of
-        (IntV x, IntV y) -> undefined
+        (IntV (MkPrimInt x), IntV (MkPrimInt y)) -> case op of
+                                PrimAdd -> Just (x + y)
+                                PrimSub -> Just (x - y)
+                                PrimMul -> Just (x * y)
+                                PrimDiv -> Just (x `quot` y)
         _                -> Nothing
-    return (ReturnInt r, as, rs, us, h, env)
+    return (ReturnInt (MkPrimInt r), as, rs, us, h, env)
 -- Rule 17 (Update triggered by an empty return stack)
 step (ReturnCon c ws, [], [], (as, rs, a) : us, h, env) = do
     let
