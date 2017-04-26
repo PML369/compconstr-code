@@ -238,7 +238,7 @@ step (ReturnCon c ws, as, (AlgAlts cs d, p) : rs, us, h, env) =
                 -- construct a new local environment in which the pattern
                 -- variables `vs' are bound to the arguments of the
                 -- constructor `ws`.
-                p' = undefined
+                p' = M.union p (M.fromList (zip vs ws))
             return (Eval e p', as, rs, us, h, env)
         Nothing                -> case d of
             -- Rule 8 (ReturnCon Case Default)
