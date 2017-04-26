@@ -223,10 +223,10 @@ step (Eval (CaseE e alts _) p, as, rs, us, h, env) =
     Just (Eval e p, as, (alts, p) : rs, us, h, env)
 
 -- Rule 6 (Constructors)
--- NOTE: `CtrE' may be called something else for you, depending on what
---       name you gave it in the previous exercise
---step (Eval (CtrE c xs _) p, as, rs, us, h, env) = do
---    undefined
+step (Eval (CtrE c xs _) p, as, rs, us, h, env) = do
+    ws <- mapM (val p env) xs
+    Just (ReturnCon c ws, as, rs, us, h, env)
+
 -- Rule 7 (ReturnCon Case Match)
 step (ReturnCon c ws, as, (AlgAlts cs d, p) : rs, us, h, env) =
     -- pattern-match on `c' using `cs' to determine which rule needs
