@@ -273,7 +273,14 @@ step (Eval (LitE k _) p, as, rs, us, h, env) =
 step (ReturnInt k, as, (PrimAlts cs d, p) : rs, us, h, env) =
     -- pattern-match on `k' using `cs' to determine which rule needs
     -- to be applied
-    undefined
+    case patternMatchPrim k cs of
+        (Just (PAlt v e _)) -> Just (Eval e p, as, rs, us, h, env)
+        Nothing -> case d of
+            (Default e _)      -> Just (Eval e p, as, rs, us, h, env)
+            (DefaultVar v e _) -> do
+                let p' = M.insert v (IntV k) p
+                return (Eval e p', as, rs, us, h, env)
+
 -- Rule 15 (Built-in operations)
 step (Eval (OpE op [x1, x2] _) p, as, rs, us, h, env) = do
     -- look up the values of `x1' and `x2'
