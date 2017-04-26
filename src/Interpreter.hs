@@ -207,7 +207,7 @@ step (Enter a, as, rs, us, h, env) = do
                                             h_u = M.insert a_u (Closure (MkLambdaForm (vs ++ xs1) N xs2 e) (ws_f ++ as)) h
                                         in Just (Enter a, (as ++ as_u), rs_u, us', h_u, env)
         -- Rule 16 (Enter Updatable Closure)
-        U -> undefined
+        U -> Just (Eval e (M.fromList (zip vs ws_f)), [], [], (as,rs,a) : us, h, env)
 -- Rule 3 (Let expressions)
 step (Eval (LetE bs e _) p, as, rs, us, h, env) = do
     undefined
