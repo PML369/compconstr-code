@@ -215,7 +215,9 @@ step (Eval (LetE bs e _) p, as, rs, us, h, env) = do
 
 -- Rule 4 (LetRec expressions)
 step (Eval (LetRecE bs e _) p, as, rs, us, h, env) = do
-    undefined
+    (p', h') <- allocClosuresRec p h bs
+    Just (Eval e p', as, rs, us, h', env)
+
 -- Rule 5 (Case expressions)
 step (Eval (CaseE e alts _) p, as, rs, us, h, env) =
     undefined
