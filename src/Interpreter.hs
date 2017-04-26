@@ -240,9 +240,10 @@ step (ReturnCon c ws, as, (AlgAlts cs d, p) : rs, us, h, env) =
                 -- constructor `ws`.
                 p' = M.union p (M.fromList (zip vs ws))
             return (Eval e p', as, rs, us, h, env)
+
         Nothing                -> case d of
             -- Rule 8 (ReturnCon Case Default)
-            (Default e _)      -> undefined
+            (Default e _)      -> Just (Eval e p, as, rs, us, h, env)
             -- Rule 9 (ReturnCon Case DefaultVar)
             (DefaultVar v e _) -> do
                 let
