@@ -297,17 +297,20 @@ step (Eval (OpE op [x1, x2] _) p, as, rs, us, h, env) = do
                                 PrimDiv -> Just (x `quot` y)
         _                -> Nothing
     return (ReturnInt (MkPrimInt r), as, rs, us, h, env)
+
 -- Rule 17 (Update triggered by an empty return stack)
 step (ReturnCon c ws, [], [], (as, rs, a) : us, h, env) = do
     let
         -- a list of distinct variables for every value in `ws'
         vs = ['v' : show i | i <- [0..length ws]]
         -- construct the lambda form for the new closure
-        lf = undefined
+        atoms = map (\v -> VarAtom v NoPosn) vs
+        lf = MkLambdaForm vs N [] (CtrE c atoms NoPosn)
         -- construct an updated heap
-        h' = undefined
+        h' = M.insert a (Closure lf ws) h
     -- transition to the new configuration
     return (ReturnCon c ws, as, rs, us, h', env)
+
 -- If no pattern matches, we are stuck:
 step _ = Nothing
 
