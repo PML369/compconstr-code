@@ -190,7 +190,6 @@ step (Enter a, as, rs, us, h, env) = do
             -- stack as are expected by the closure
             -- Rule 2 (Enter Non-Updatable Closure)
             if length as >= length xs then do
-                -- (ws_a, as_p) <- splitAt (length xs) as
                 let  (ws_a, as_p) = splitAt (length xs) as
                      p = M.union (M.fromList (zip vs ws_f)) (M.fromList (zip xs ws_a))
                 Just (Eval e p, as_p, rs, us, h, env)
@@ -203,7 +202,10 @@ step (Enter a, as, rs, us, h, env) = do
                 -- try to obtain an update frame from the update stack
                 case us of
                     []                        -> Nothing
-                    ((as_u, rs_u, a_u) : us') -> undefined
+                    ((as_u, rs_u, a_u) : us') -> 
+                                        let (xs1, xs2) = splitAt (length as) xs
+                                            h_u = M.insert a_u (Closure (MkLambdaForm (vs ++ xs1) N xs2 e) (ws_f ++ as)) h
+                                        in Just (Enter a, (as ++ as_u), rs_u, us', h_u, env)
         -- Rule 16 (Enter Updatable Closure)
         U -> undefined
 -- Rule 3 (Let expressions)
