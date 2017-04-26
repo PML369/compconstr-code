@@ -191,13 +191,10 @@ step (Enter a, as, rs, us, h, env) = do
             -- Rule 2 (Enter Non-Updatable Closure)
             if length as >= length xs then do
                 -- (ws_a, as_p) <- splitAt (length xs) as
-                ws_a <- take (length xs) as
-                as_p <- drop (length xs) as
-                p1 <- M.fromList (zip vs ws_f)
-                p2 <- M.fromList (zip xs ws_a)
-                p <- M.union p1 p2
-
+                let  (ws_a, as_p) = splitAt (length xs) as
+                     p = M.union (M.fromList (zip vs ws_f)) (M.fromList (zip xs ws_a))
                 Just (Eval e p, as_p, rs, us, h, env)
+
             -- Rule 18 (NotEnoughArguments Update)
             else do
                 -- the return stack should be empty
