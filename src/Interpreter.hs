@@ -244,6 +244,7 @@ step (ReturnCon c ws, as, (AlgAlts cs d, p) : rs, us, h, env) =
         Nothing                -> case d of
             -- Rule 8 (ReturnCon Case Default)
             (Default e _)      -> Just (Eval e p, as, rs, us, h, env)
+
             -- Rule 9 (ReturnCon Case DefaultVar)
             (DefaultVar v e _) -> do
                 let
@@ -253,15 +254,17 @@ step (ReturnCon c ws, as, (AlgAlts cs d, p) : rs, us, h, env) =
                     n  = M.size h
                     -- construct a new local environment in which the
                     -- variable `v' maps to some memory address
-                    p' = undefined
+                    p' = M.insert v (AddrV (Addr n)) p
                     -- a list of distinct variables for every argument of
                     -- the constructor
                     vs = ['v' : show i | i <- [0..length ws]]
                     -- a lambda form for the new closure
-                    lf = undefined
+                    atoms = map (\v -> VarAtom v NoPosn) vs
+                    lf = MkLambdaForm vs N [] (CtrE c atoms NoPosn)
                     -- an updated heap with the new closure added to it
-                    h' = undefined
+                    h' = M.insert (Addr n) (Closure lf ws) h
                 return (Eval e p', as, rs, us, h', env)
+
 -- Rule 10 (Literals)
 step (Eval (LitE k _) p, as, rs, us, h, env) =
     undefined
