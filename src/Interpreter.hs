@@ -220,7 +220,8 @@ step (Eval (LetRecE bs e _) p, as, rs, us, h, env) = do
 
 -- Rule 5 (Case expressions)
 step (Eval (CaseE e alts _) p, as, rs, us, h, env) =
-    undefined
+    Just (Eval e p, as, (alts, p) : rs, us, h, env)
+
 -- Rule 6 (Constructors)
 -- NOTE: `CtrE' may be called something else for you, depending on what
 --       name you gave it in the previous exercise
