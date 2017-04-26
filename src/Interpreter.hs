@@ -210,7 +210,9 @@ step (Enter a, as, rs, us, h, env) = do
         U -> Just (Eval e (M.fromList (zip vs ws_f)), [], [], (as,rs,a) : us, h, env)
 -- Rule 3 (Let expressions)
 step (Eval (LetE bs e _) p, as, rs, us, h, env) = do
-    undefined
+    (p', h') <- allocClosures p h bs
+    Just (Eval e p', as, rs, us, h', env)
+
 -- Rule 4 (LetRec expressions)
 step (Eval (LetRecE bs e _) p, as, rs, us, h, env) = do
     undefined
