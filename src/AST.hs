@@ -96,11 +96,6 @@ data AExpr a
         ctrAtoms :: [AAtom a],
         exprAnn  :: a
     }
-    | CtrE {
-        ctrName	:: Ctr,
-        opAtoms	:: [Atom],
-        opPosn	:: Posn
-    }
     | OpE {
         opType  :: PrimOp,
         opAtoms :: [AAtom a],

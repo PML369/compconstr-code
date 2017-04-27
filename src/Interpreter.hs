@@ -249,7 +249,6 @@ step (ReturnCon c ws, as, (AlgAlts cs d, p) : rs, us, h, env) = do
                     zs = map (flip VarAtom NoPosn) vs
                     lf = MkLambdaForm vs N [] (CtrE c zs NoPosn)
                     h' = M.insert (Addr n) (Closure lf ws) h
-                    lf = MkLambdaForm vs N [] (CtrE c atoms NoPosn)
                 return (Eval e p', as, rs, us, h', env)
 -- Rule 9 (Literals)
 step (Eval (LitE k _) p, as, rs, us, h, env) = do
@@ -280,7 +279,7 @@ step (Eval (OpE op [x1, x2] _) p, as, rs, us, h, env) = do
             PrimMul -> return (x*y)
             PrimDiv -> return (x `div` y)
         _ -> mzero
-    return (ReturnInt (MkPrimInt r), as, rs, us, h, env)
+    return (ReturnInt r, as, rs, us, h, env)
 -- Rule 16 (EmptyReturnStack Update)
 step (ReturnCon c ws, [], [], (as, rs, a) : us, h, env) = do
     let
@@ -288,7 +287,6 @@ step (ReturnCon c ws, [], [], (as, rs, a) : us, h, env) = do
         zs = map (flip VarAtom NoPosn) vs
         lf = MkLambdaForm vs N [] (CtrE c zs NoPosn)
         h' = M.insert a (Closure lf ws) h
-        lf = MkLambdaForm vs N [] (CtrE c atoms NoPosn)
     return (ReturnCon c ws, as, rs, us, h', env)
 -- Otherwise, we are stuck:
 step _ = Nothing
